@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">SmartMirror</string>
+
+    <string name="open_nav_drawer">OPEN_NAV_BAR</string>
+    <string name="close_nav_drawer">CLOSE_NAV_BAR</string>
+
+    <string name="interest_configuration">INTEREST CONFIGURATION</string>
+    <string name="news_interests">News interests</string>
+    <string name="location_information">Location information</string>
+
+    <string name="emotional_configurations">EMOTIONAL CONFIGURATIONS</string>
+    <string name="happy">Happy</string>
+    <string name="neutral">Neutral</string>
+    <string name="sad">Sad</string>
+
+    <string name="account">ACCOUNT</string>
+    <string name="setup_face_recognition">Setup face recognition</string>
+    <string name="title">SmartMirror</string>
+    <string name="created_by_gayanga_kuruppu">Created by Gayanga Kuruppu</string>
+    <string name="logout">Logout</string>
+</resources>

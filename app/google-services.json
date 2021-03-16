@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "638890646869",
+    "firebase_url": "https://smartmirror-c227b-default-rtdb.firebaseio.com",
+    "project_id": "smartmirror-c227b",
+    "storage_bucket": "smartmirror-c227b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638890646869:android:884d6a9e8f64c40d4563dc",
+        "android_client_info": {
+          "package_name": "com.guyson.smartmirror"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "638890646869-1jf6rno6ulm8o1n73vpebvir14iqo9ak.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.guyson.smartmirror",
+            "certificate_hash": "f2e61f78fc5ca9b4ce2a4af3f8f143895b309d40"
+          }
+        },
+        {
+          "client_id": "638890646869-8fn3m6ksp57sqbhoi7cs6lij7emc8f51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtW23DYlwlu5DnII9iKLDACS9OB9L_EBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "638890646869-8fn3m6ksp57sqbhoi7cs6lij7emc8f51.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

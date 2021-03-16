@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="MAIN">
+        <menu>
+            <item android:title="Home" android:icon="@drawable/ic_baseline_home_24" android:id="@+id/home" />
+        </menu>
+    </item>
+    <item android:title="@string/interest_configuration">
+        <menu>
+            <item android:title="@string/news_interests" android:icon="@drawable/ic_baseline_article_24"/>
+            <item android:title="@string/location_information" android:icon="@drawable/ic_baseline_location_on_24"/>
+        </menu>
+    </item>
+    <item android:title="@string/emotional_configurations">
+        <menu>
+            <item android:title="@string/happy" android:icon="@drawable/ic_baseline_tag_faces_24"/>
+            <item android:title="@string/neutral" android:icon="@drawable/neutral"/>
+            <item android:title="@string/sad" android:icon="@drawable/sad" />
+        </menu>
+    </item>
+    <item android:title="@string/account">
+        <menu>
+            <item android:title="@string/setup_face_recognition" android:icon="@drawable/ic_baseline_face_24" android:id="@+id/setup_fr"/>
+            <item android:title="@string/logout" android:icon="@drawable/ic_logout" android:id="@+id/logout" />
+        </menu>
+    </item>
+</menu>
