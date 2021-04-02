@@ -28,13 +28,26 @@ public class MainActivity extends AppCompatActivity {
     private TextView mRegisterTextView;
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Setup Authorization
         firebaseAuth = FirebaseAuth.getInstance();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                //If user is logged in direct user to "Home"
+                if (firebaseAuth.getCurrentUser() != null) {
+                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            }
+        };
 
         //Initialize views
         mEmailEditText = findViewById(R.id.input_email);
@@ -96,10 +109,15 @@ public class MainActivity extends AppCompatActivity {
                         mProgressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(MainActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
                     }
-
                 }
             });
-
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check for authorization
+        firebaseAuth.addAuthStateListener(authStateListener);
     }
 }

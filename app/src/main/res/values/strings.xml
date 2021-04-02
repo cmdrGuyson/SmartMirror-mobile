@@ -18,4 +18,7 @@
     <string name="title">SmartMirror</string>
     <string name="created_by_gayanga_kuruppu">Created by Gayanga Kuruppu</string>
     <string name="logout">Logout</string>
+    <string name="select_images_and_configure">Select Images and Configure</string>
+    <string name="capture_images">Capture Images</string>
+    <string name="to_configure_description">To configure facial recognition, first capture 10 images of your face. Then select captured images</string>
 </resources>

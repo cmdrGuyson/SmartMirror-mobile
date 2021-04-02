@@ -33,13 +33,26 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView mLoginTextView;
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // Setup Authorization
         firebaseAuth = FirebaseAuth.getInstance();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                //If user is logged in direct user to "Home"
+                if (firebaseAuth.getCurrentUser() != null) {
+                    Intent intent = new Intent(RegisterActivity.this, UserActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            }
+        };
 
         mFirstNameEditText = findViewById(R.id.input_firstName);
         mLastNameEditText = findViewById(R.id.input_lastName);
@@ -108,7 +121,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                         Toast.makeText(RegisterActivity.this, "Successfully Registered!", Toast.LENGTH_SHORT).show();
 
+                        //Hide progress bar
                         mProgressBar.setVisibility(View.INVISIBLE);
+
                         //Redirect to home page
                         Intent homePageIntent = new Intent(RegisterActivity.this, UserActivity.class);
                         homePageIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -119,9 +134,13 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
             });
-
-
-
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check for authorization
+        firebaseAuth.addAuthStateListener(authStateListener);
     }
 }

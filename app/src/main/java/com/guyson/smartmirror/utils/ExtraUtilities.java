@@ -12,6 +12,7 @@ public class ExtraUtilities {
         return EMAIL_REGEX.matcher(email).matches();
     }
 
+    // Compress given bitmap image
     public static Bitmap reduceBitmapSize(Bitmap bitmap, int MAX_SIZE) {
         double ratioSquare;
         int bitmapHeight, bitmapWidth;

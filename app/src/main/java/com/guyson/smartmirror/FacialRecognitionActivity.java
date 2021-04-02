@@ -19,18 +19,26 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.guyson.smartmirror.service.RetrofitClientInstance;
 import com.guyson.smartmirror.service.UserClient;
 import com.guyson.smartmirror.utils.ExtraUtilities;
 import com.guyson.smartmirror.utils.NavHandler;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,16 +62,37 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-    private Button selectButton;
+    private Button selectButton, captureButton;
+    private ProgressBar mProgressBar;
 
-    private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+    private String uid;
 
-    private int STORAGE_REQUEST = 1;
+    private final UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facial_recognition);
+
+        // Setup Authorization
+        firebaseAuth = FirebaseAuth.getInstance();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                //If user is not logged in direct user to "Login"
+                if (firebaseAuth.getCurrentUser() == null) {
+                    Intent intent = new Intent(FacialRecognitionActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            }
+        };
+
+        if(firebaseAuth.getCurrentUser()!=null){
+            uid = firebaseAuth.getCurrentUser().getUid();
+        }
 
         //Setup toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -85,13 +114,22 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
         mActionBarDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        mProgressBar = findViewById(R.id.progressbar);
+
         //Setup buttons
         selectButton = findViewById(R.id.select_button);
-
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectImages();
+            }
+        });
+
+        captureButton = findViewById(R.id.capture_button);
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                captureImages();
             }
         });
     }
@@ -99,7 +137,7 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Handle navigation
-        NavHandler.handleNav(item, FacialRecognitionActivity.this);
+        NavHandler.handleNav(item, FacialRecognitionActivity.this, firebaseAuth);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -111,18 +149,35 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
 
     }
 
+    private void captureImages() {
+
+        //Check if permissions are setup
+        if (ActivityCompat.checkSelfPermission(FacialRecognitionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(FacialRecognitionActivity.this, new String[] {Manifest.permission.CAMERA}, 200);
+            return;
+        }
+
+        //Open camera activity
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        intent.putExtra("android.intent.extras.CAMERA_FACING", android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
+        this.startActivity(intent);
+
+    }
+
     private void selectImages() {
 
+        //Check if permissions are setup
         if (ActivityCompat.checkSelfPermission(FacialRecognitionActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(FacialRecognitionActivity.this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
             return;
         }
 
         if (ActivityCompat.checkSelfPermission(FacialRecognitionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(FacialRecognitionActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+            ActivityCompat.requestPermissions(FacialRecognitionActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
             return;
         }
 
+        //Open activity to select images
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setType("image/*");
@@ -157,9 +212,7 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
                         return;
                     }
                 }
-
                 uploadFiles(bitmaps);
-
             }
             else{
                 Toast.makeText(this, "Please select only 10 images", Toast.LENGTH_SHORT).show();
@@ -179,23 +232,53 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
         }
         else{
 
+            //Add all files to multipart form data
             for (File f : files) {
                 builder.addFormDataPart("files[]", f.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), f));
             }
 
+            //Build request body and make request
             MultipartBody requestBody = builder.build();
-            Call<ResponseBody> call = userClient.setupFaceRecognition(requestBody.parts(), "Alvaro");
+            Call<ResponseBody> call = userClient.setupFaceRecognition(requestBody.parts(), uid);
+
+            //Show progress bar
+            mProgressBar.setVisibility(View.VISIBLE);
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    Toast.makeText(FacialRecognitionActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                    //Successfully added
+                    if (response.code()==200) {
+                        // Get reference to user object
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("user").child(uid).child("configuredFaceRecognition");
+
+                        //Set "Configured Face Recognition" to true
+                        reference.setValue(true);
+
+                        Toast.makeText(FacialRecognitionActivity.this, "Successfully setup face recognition!", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+
+                        try {
+
+                            // Capture an display specific messages
+                            JSONObject obj = new JSONObject(response.errorBody().string());
+                            Toast.makeText(FacialRecognitionActivity.this, obj.getString("error"), Toast.LENGTH_SHORT).show();
+
+                        }catch(Exception e) {
+                            Toast.makeText(FacialRecognitionActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    //Hide progress bar
+                    mProgressBar.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     t.printStackTrace();
-                    Toast.makeText(FacialRecognitionActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FacialRecognitionActivity.this, "Something went wrong when contacting server!", Toast.LENGTH_SHORT).show();
+                    //Hide progress bar
+                    mProgressBar.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -211,7 +294,11 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
 
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+
+            //Create a file with random name
             File file = new File(directory, random.nextInt(9999999)+ i + ".jpg");
+
+            //Convert bitmap to byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmaps.get(i).compress(Bitmap.CompressFormat.JPEG, 50, bos);
             byte[] bitmapData = bos.toByteArray();
@@ -231,5 +318,12 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
         }
 
         return files;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check for authorization
+        firebaseAuth.addAuthStateListener(authStateListener);
     }
 }
