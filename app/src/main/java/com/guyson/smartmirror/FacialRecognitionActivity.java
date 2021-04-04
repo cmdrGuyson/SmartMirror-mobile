@@ -6,7 +6,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -19,9 +18,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,8 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.guyson.smartmirror.service.RetrofitClientInstance;
 import com.guyson.smartmirror.service.UserClient;
-import com.guyson.smartmirror.utils.ExtraUtilities;
-import com.guyson.smartmirror.utils.NavHandler;
+import com.guyson.smartmirror.util.ExtraUtilities;
+import com.guyson.smartmirror.util.NavHandler;
 
 import org.json.JSONObject;
 
@@ -55,7 +52,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Multipart;
 
 public class FacialRecognitionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

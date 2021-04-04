@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserActivity"
+    tools:context=".NewsActivity"
     android:id="@+id/drawer_layout">
 
     <RelativeLayout
@@ -18,23 +18,36 @@
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:title="Configure News">
                 <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
-                    android:id="@+id/toolbar"
-                    app:title="Home"/>
+                    app:title="Select News Interests" />
             </com.google.android.material.appbar.AppBarLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_below="@id/coordinator_layout"
-            android:layout_margin="30dp"
-            android:text="Add"
-            android:id="@+id/add" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:max="100"
+            android:layout_margin="3dp"
+            android:backgroundTint="@color/white"
+            android:layout_alignParentBottom="true"
+            android:visibility="invisible"
+            android:indeterminateTint="@color/colorPrimaryDark"
+            android:layout_marginTop="-7dp"/>
 
     </RelativeLayout>
 

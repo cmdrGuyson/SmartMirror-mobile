@@ -10,16 +10,23 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.guyson.smartmirror.utils.NavHandler;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.guyson.smartmirror.model.NewsArticle;
+import com.guyson.smartmirror.util.NavHandler;
 
 public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+    private Button mButton;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -62,6 +69,21 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
+
+        mButton = findViewById(R.id.add);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("news");
+                NewsArticle article = new NewsArticle();
+                article.setApiUrl("https://newsapi.org/v2/top-headlines?language=en&category=entertainment");
+                article.setTitle("Entertainment");
+                article.setImageUrl("https://firebasestorage.googleapis.com/v0/b/smartmirror-c227b.appspot.com/o/entertainment.jpg?alt=media&token=457129fd-d90a-4c2a-8aa5-4eec4128f085");
+                article.setDescription("In vitae turpis massa sed elementum tempus egestas sed. Ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis. Sit amet aliquam id diam. Fusce id velit ut tortor pretium viverra suspendisse potenti nullam. Suscipit tellus mauris a diam. Interdum velit euismod in pellentesque massa placerat duis ultricies.");
+                ref.push().setValue(article);
+                Toast.makeText(UserActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

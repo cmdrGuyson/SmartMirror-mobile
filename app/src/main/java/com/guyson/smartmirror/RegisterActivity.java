@@ -21,8 +21,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.guyson.smartmirror.models.User;
-import com.guyson.smartmirror.utils.ExtraUtilities;
+import com.guyson.smartmirror.model.User;
+import com.guyson.smartmirror.util.ExtraUtilities;
 
 public class RegisterActivity extends AppCompatActivity {
 
