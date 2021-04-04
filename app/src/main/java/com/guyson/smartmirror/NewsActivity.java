@@ -32,6 +32,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.guyson.smartmirror.adapter.NewsAdapter;
 import com.guyson.smartmirror.model.NewsArticle;
+import com.guyson.smartmirror.model.User;
 import com.guyson.smartmirror.util.NavHandler;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private String uid;
+    private User user;
 
     private List<NewsArticle> newsArticles;
 
@@ -108,10 +110,36 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        newsAdapter = new NewsAdapter(this, newsArticles);
+        newsAdapter = new NewsAdapter(this, newsArticles, user);
         recyclerView.setAdapter(newsAdapter);
 
-        getAllNews();
+        //Firebase database Reference to current user's User object
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user").child(firebaseAuth.getCurrentUser().getUid());
+
+        //Show progress bar
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        //Get user object
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(User.class);
+                if(user!=null) {
+                    newsAdapter.setUser(user);
+                    getAllNews();
+                }
+                else {
+                    Toast.makeText(NewsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(NewsActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override

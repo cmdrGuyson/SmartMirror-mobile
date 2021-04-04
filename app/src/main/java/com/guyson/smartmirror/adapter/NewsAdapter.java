@@ -5,21 +5,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.guyson.smartmirror.R;
 import com.guyson.smartmirror.model.NewsArticle;
+import com.guyson.smartmirror.model.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> implements Filterable {
@@ -28,9 +37,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     private List<NewsArticle> news;
     private List<NewsArticle> filteredNews;
 
-    public NewsAdapter(Context context, List<NewsArticle> news) {
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    private User user;
+
+    public NewsAdapter(Context context, List<NewsArticle> news, User user) {
         this.context = context;
         this.news = news;
+        this.user = user;
     }
 
     public void setNews(final List<NewsArticle> news){
@@ -90,7 +106,50 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         //Load image
         Picasso.get().load(filteredNews.get(position).getImageUrl()).placeholder(R.drawable.entertainment).into(holder.mImage);
 
-        //Handle switch button
+        boolean isSubscribed = false;
+
+        if(user!=null){
+
+            if(user.getNews()==null) user.setNews(new ArrayList<String>());
+
+            //Check if user already subscribed to news article
+            for (String n : user.getNews()) {
+                if(n.equals(filteredNews.get(position).getUid())) {
+                    isSubscribed = true;
+                    holder.mSwitch.setChecked(true);
+                    break;
+                }
+            }
+
+
+            //Handle switch button
+            final boolean finalIsSubscribed = isSubscribed;
+
+            holder.mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+
+                    List<String> list = user.getNews();
+
+                    //If user is subscribed to news article
+                    if (finalIsSubscribed) {
+                        list.remove(filteredNews.get(position).getUid());
+                        compoundButton.setChecked(false);
+                    } else {
+                        list.add(filteredNews.get(position).getUid());
+                        compoundButton.setChecked(true);
+                    }
+
+
+                    //Update user object
+                    user.setNews(list);
+
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("user").child(user.getUid());
+                    ref.child("news").setValue(user.getNews());
+
+                }
+            });
+        }
     }
 
     @Override
