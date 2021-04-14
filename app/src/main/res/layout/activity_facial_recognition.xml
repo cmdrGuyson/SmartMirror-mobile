@@ -47,7 +47,8 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:text="@string/capture_images"
-            android:id="@+id/capture_button"/>
+            android:id="@+id/capture_button"
+            app:cornerRadius="16dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
@@ -57,7 +58,16 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:text="@string/select_images_and_configure"
-            android:id="@+id/select_button"/>
+            android:id="@+id/select_button"
+            app:cornerRadius="16dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/faceid"
+            android:layout_below="@id/select_button"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"/>
 
         <ProgressBar
             android:id="@+id/progressbar"

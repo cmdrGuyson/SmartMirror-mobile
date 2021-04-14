@@ -104,7 +104,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         holder.mDescription.setText(filteredNews.get(position).getDescription());
 
         //Load image
-        Picasso.get().load(filteredNews.get(position).getImageUrl()).placeholder(R.drawable.entertainment).into(holder.mImage);
+        Picasso.get().load(filteredNews.get(position).getImageUrl()).placeholder(R.drawable.placeholder).into(holder.mImage);
 
         boolean isSubscribed = false;
 

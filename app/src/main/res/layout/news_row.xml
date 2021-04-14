@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
-    app:cardElevation="3dp"
+    app:cardElevation="5dp"
     app:cardUseCompatPadding="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="30dp"
@@ -51,7 +51,7 @@
             android:layout_height="200dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/entertainment" />
+            app:srcCompat="@drawable/placeholder" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
