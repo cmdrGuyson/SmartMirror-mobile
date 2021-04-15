@@ -4,7 +4,7 @@
     <string name="open_nav_drawer">OPEN_NAV_BAR</string>
     <string name="close_nav_drawer">CLOSE_NAV_BAR</string>
 
-    <string name="interest_configuration">INTEREST CONFIGURATION</string>
+    <string name="general_configurations">GENERAL CONFIGURATIONS</string>
     <string name="news_interests">News interests</string>
     <string name="location_information">Location information</string>
 
@@ -20,5 +20,8 @@
     <string name="logout">Logout</string>
     <string name="select_images_and_configure">Select Images and Configure</string>
     <string name="capture_images">Capture Images</string>
+
+
     <string name="to_configure_description">To configure facial recognition, first capture 10 images of your face. Then select captured images</string>
+    <string name="location_configure_description">Please select the city you are located in for us to provide accurate weather information</string>
 </resources>

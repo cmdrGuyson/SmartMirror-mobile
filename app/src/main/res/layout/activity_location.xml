@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FacialRecognitionActivity"
+    tools:context=".LocationActivity"
     android:id="@+id/drawer_layout">
 
     <RelativeLayout
@@ -23,7 +23,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:id="@+id/toolbar"
-                    app:title="Configure Face Recognition"/>
+                    app:title="Location Information"/>
             </com.google.android.material.appbar.AppBarLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -37,37 +37,47 @@
             android:layout_marginTop="50dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:text="@string/to_configure_description"/>
+            android:text="@string/location_configure_description"/>
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/otf_location"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_below="@id/hint_tv"
+            android:layout_height="wrap_content"
+            android:hint="Select Location"
             android:layout_marginTop="50dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:text="@string/capture_images"
-            android:id="@+id/capture_button"
-            app:cornerRadius="22dp"/>
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_below="@id/hint_tv"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/city_dropdown"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_below="@id/capture_button"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:text="@string/select_images_and_configure"
-            android:id="@+id/select_button"
-            app:cornerRadius="22dp"/>
+            android:layout_below="@id/otf_location"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:text="Confirm Location"
+            android:id="@+id/confirm_button"
+            app:cornerRadius="24dp"/>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/faceid"
-            android:layout_below="@id/select_button"
-            android:layout_marginRight="50dp"
-            android:layout_marginLeft="50dp"/>
+            android:src="@drawable/location"
+            android:layout_below="@id/confirm_button"
+            android:layout_marginRight="80dp"
+            android:layout_marginLeft="80dp"/>
 
         <ProgressBar
             android:id="@+id/progressbar"

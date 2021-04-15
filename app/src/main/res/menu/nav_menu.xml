@@ -5,10 +5,10 @@
             <item android:title="Home" android:icon="@drawable/ic_baseline_home_24" android:id="@+id/home" />
         </menu>
     </item>
-    <item android:title="@string/interest_configuration">
+    <item android:title="@string/general_configurations">
         <menu>
             <item android:title="@string/news_interests" android:icon="@drawable/ic_baseline_article_24" android:id="@+id/news_nav"/>
-            <item android:title="@string/location_information" android:icon="@drawable/ic_baseline_location_on_24"/>
+            <item android:title="@string/location_information" android:icon="@drawable/ic_baseline_location_on_24" android:id="@+id/location_nav"/>
         </menu>
     </item>
     <item android:title="@string/emotional_configurations">

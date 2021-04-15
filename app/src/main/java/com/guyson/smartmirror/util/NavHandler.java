@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.guyson.smartmirror.FacialRecognitionActivity;
+import com.guyson.smartmirror.LocationActivity;
 import com.guyson.smartmirror.NewsActivity;
 import com.guyson.smartmirror.R;
 import com.guyson.smartmirror.UserActivity;
@@ -32,6 +33,13 @@ public class NavHandler {
             case R.id.news_nav: {
                 //News
                 Intent intent = new Intent(context, NewsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+                break;
+            }
+            case R.id.location_nav: {
+                //Location
+                Intent intent = new Intent(context, LocationActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
                 break;
