@@ -5,7 +5,8 @@ import java.util.List;
 
 public class User {
 
-    private String uid, email, firstName, lastName, location;
+    private String uid, email, firstName, lastName;
+    private int locationId;
 
     private List<String> news = new ArrayList<>();
     private List<String> happy = new ArrayList<>();
@@ -13,7 +14,9 @@ public class User {
     private List<String> neutral = new ArrayList<>();
     private boolean configuredFaceRecognition;
 
-    public User() {}
+    public User() {
+        locationId = -1;
+    }
 
 
     public User(String uid, String email, String firstName, String lastName) {
@@ -22,6 +25,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.configuredFaceRecognition = false;
+        this.locationId = -1;
     }
 
     public String getUid() {
@@ -56,12 +60,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getLocation() {
-        return location;
+    public int getLocationId() {
+        return locationId;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 
     public List<String> getNews() {
