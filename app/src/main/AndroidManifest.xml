@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
-        <activity android:name=".LocationActivity"></activity>
+        <activity android:name=".TwitterActivity"></activity>
+        <activity android:name=".LocationActivity" />
         <activity android:name=".NewsActivity" />
         <activity android:name=".FacialRecognitionActivity" />
         <activity android:name=".RegisterActivity" />

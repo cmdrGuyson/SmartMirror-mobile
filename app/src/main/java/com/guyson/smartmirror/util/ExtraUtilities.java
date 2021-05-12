@@ -27,4 +27,9 @@ public class ExtraUtilities {
         return Bitmap.createScaledBitmap(bitmap, requiredWidth, requiredHeight, true);
     }
 
+    //Format type of twitter article to fit card
+    public static String formatType(String type) {
+        return String.format("  %s  ", type);
+    }
+
 }

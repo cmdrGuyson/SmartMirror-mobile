@@ -13,9 +13,9 @@
     </item>
     <item android:title="@string/emotional_configurations">
         <menu>
-            <item android:title="@string/happy" android:icon="@drawable/ic_baseline_tag_faces_24"/>
-            <item android:title="@string/neutral" android:icon="@drawable/neutral"/>
-            <item android:title="@string/sad" android:icon="@drawable/sad" />
+            <item android:title="@string/happy" android:icon="@drawable/ic_baseline_tag_faces_24" android:id="@+id/happy_nav"/>
+            <item android:title="@string/neutral" android:icon="@drawable/neutral" android:id="@+id/neutral_nav"/>
+            <item android:title="@string/sad" android:icon="@drawable/sad" android:id="@+id/sad_nav"/>
         </menu>
     </item>
     <item android:title="@string/account">

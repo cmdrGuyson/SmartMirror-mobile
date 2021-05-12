@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.guyson.smartmirror.model.NewsArticle;
+import com.guyson.smartmirror.model.TwitterArticle;
 import com.guyson.smartmirror.util.NavHandler;
 
 public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -74,12 +75,13 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("news");
-                NewsArticle article = new NewsArticle();
-                article.setApiUrl("https://newsapi.org/v2/top-headlines?language=en&category=entertainment");
-                article.setTitle("Entertainment");
-                article.setImageUrl("https://firebasestorage.googleapis.com/v0/b/smartmirror-c227b.appspot.com/o/entertainment.jpg?alt=media&token=457129fd-d90a-4c2a-8aa5-4eec4128f085");
-                article.setDescription("In vitae turpis massa sed elementum tempus egestas sed. Ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis. Sit amet aliquam id diam. Fusce id velit ut tortor pretium viverra suspendisse potenti nullam. Suscipit tellus mauris a diam. Interdum velit euismod in pellentesque massa placerat duis ultricies.");
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tweets");
+                TwitterArticle article = new TwitterArticle();
+                article.setTitle("@Pulse_LK");
+                article.setDescription("Mus mauris vitae ultricies leo integer malesuada nunc. Tempor nec feugiat nisl pretium fusce id. Eu non diam phasellus vestibulum lorem. In ante metus dictum at tempor. In egestas erat imperdiet sed euismod nisi.");
+                article.setImageUrl("https://firebasestorage.googleapis.com/v0/b/smartmirror-c227b.appspot.com/o/pulse.jpg?alt=media&token=989a1873-8671-41e0-b2b5-6ef35a22c17f");
+                article.setKeyword("pulse_lk");
+                article.setType("Lifestyle");
                 ref.push().setValue(article);
                 Toast.makeText(UserActivity.this, "Added!", Toast.LENGTH_SHORT).show();
             }

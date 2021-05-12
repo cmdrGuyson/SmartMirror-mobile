@@ -81,7 +81,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
 
                     NewsArticle oldArticle = news.get(newItemPosition);
 
-                    return newArticle.getUid().equals(oldArticle.getUid()) ;
+                    return newArticle.getUid().equals(oldArticle.getUid());
                 }
             });
             this.news = news;
@@ -96,6 +96,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     public NewsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.news_row, parent,false);
         return new ViewHolder(view);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override
