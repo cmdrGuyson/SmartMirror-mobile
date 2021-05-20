@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +35,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.guyson.smartmirror.adapter.NewsAdapter;
 import com.guyson.smartmirror.adapter.TwitterAdapter;
+import com.guyson.smartmirror.fragment.AddTwitterFragment;
 import com.guyson.smartmirror.model.NewsArticle;
 import com.guyson.smartmirror.model.TwitterArticle;
 import com.guyson.smartmirror.model.User;
@@ -63,7 +66,7 @@ public class TwitterActivity extends AppCompatActivity implements NavigationView
     private String uid;
     private User user;
 
-    private List<TwitterArticle> twitterArticles;
+    private List<TwitterArticle> twitterArticles, customArticles, systemArticles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +116,6 @@ public class TwitterActivity extends AppCompatActivity implements NavigationView
         //Identify which emotion to be configured
         getConfigureType();
 
-        //Setup classes list
-        twitterArticles = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -126,6 +127,11 @@ public class TwitterActivity extends AppCompatActivity implements NavigationView
 
         //Show progress bar
         mProgressBar.setVisibility(View.VISIBLE);
+
+        //Initialize lists
+        systemArticles = new ArrayList<>();
+        customArticles = new ArrayList<>();
+        twitterArticles = new ArrayList<>();
 
         //Get user object
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -182,7 +188,7 @@ public class TwitterActivity extends AppCompatActivity implements NavigationView
 
     }
 
-    public void getAllTwitterArticles() {
+    private void getAllTwitterArticles() {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tweets");
 
@@ -192,13 +198,22 @@ public class TwitterActivity extends AppCompatActivity implements NavigationView
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                twitterArticles.clear();
+                List<TwitterArticle> list = new ArrayList<>();
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                     TwitterArticle article = postSnapshot.getValue(TwitterArticle.class);
-                    twitterArticles.add(article);
+                    list.add(article);
                 }
+                systemArticles = list;
+
+                List<TwitterArticle> temp_list = new ArrayList<>();
+                temp_list.addAll(systemArticles);
+                temp_list.addAll(customArticles);
+
+                twitterArticles = temp_list;
                 twitterAdapter.setArticles(twitterArticles);
                 mProgressBar.setVisibility(View.INVISIBLE);
+
+                getCustomArticles();
             }
 
             @Override
@@ -208,12 +223,45 @@ public class TwitterActivity extends AppCompatActivity implements NavigationView
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
         });
+    }
 
+    private void getCustomArticles() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("custom_tweets").child(uid);
+
+        //Show progress bar
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List<TwitterArticle> list = new ArrayList<>();
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    TwitterArticle article = postSnapshot.getValue(TwitterArticle.class);
+                    list.add(article);
+                }
+                customArticles = list;
+
+                List<TwitterArticle> temp_list = new ArrayList<>();
+                temp_list.addAll(systemArticles);
+                temp_list.addAll(customArticles);
+
+                twitterArticles = temp_list;
+                twitterAdapter.setArticles(twitterArticles);
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+                Toast.makeText(TwitterActivity.this, "Something went wrong while getting custom articles!", Toast.LENGTH_SHORT).show();
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_options_menu, menu);
+        getMenuInflater().inflate(R.menu.options_menu, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -240,6 +288,12 @@ public class TwitterActivity extends AppCompatActivity implements NavigationView
         int id = item.getItemId();
         if (id == R.id.action_search) {
             return true;
+        } else if (id == R.id.add) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            AddTwitterFragment fragment = new AddTwitterFragment();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
         }
 
         return super.onOptionsItemSelected(item);

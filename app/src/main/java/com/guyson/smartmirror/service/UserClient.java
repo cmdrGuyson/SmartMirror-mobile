@@ -16,5 +16,4 @@ public interface UserClient {
     @POST("face-setup/{uid}")
     Call<ResponseBody> setupFaceRecognition(@Part List<MultipartBody.Part> files, @Path("uid") String uid);
 
-
 }

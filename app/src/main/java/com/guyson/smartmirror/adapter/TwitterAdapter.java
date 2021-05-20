@@ -114,7 +114,7 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
         holder.mType.setText(ExtraUtilities.formatType(filteredArticles.get(position).getType()));
 
         //Load image
-        Picasso.get().load(filteredArticles.get(position).getImageUrl()).placeholder(R.drawable.placeholder).into(holder.mImage);
+        Picasso.get().load(filteredArticles.get(position).getImageUrl()).placeholder(R.drawable.twitter).into(holder.mImage);
 
         boolean isSubscribed = false;
 

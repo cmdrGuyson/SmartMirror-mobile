@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 google-services.json
+app/src/main/res/values/tokens.xml

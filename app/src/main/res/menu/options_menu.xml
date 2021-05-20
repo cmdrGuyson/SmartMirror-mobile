@@ -9,4 +9,10 @@
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView"/>
 
+    <item
+        android:id="@+id/add"
+        android:icon="@drawable/ic_baseline_add_24"
+        android:title="@string/add"
+        app:showAsAction="ifRoom" />
+
 </menu>
