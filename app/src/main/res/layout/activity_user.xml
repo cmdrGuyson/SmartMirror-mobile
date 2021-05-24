@@ -28,13 +28,64 @@
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:id="@+id/linear"
+            android:layout_below="@id/coordinator_layout">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/logo" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/smartmirror"
+                android:textSize="40sp"
+                android:layout_marginLeft="8dp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linear"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="@string/sm_info"
+            android:layout_marginTop="10dp"
+            android:gravity="center" />
+
+        <ImageView
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:layout_above="@id/cal_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/calendar" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cal_info"
+            android:layout_above="@id/sync"
+            android:id="@+id/cal_info"
+            android:gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/coordinator_layout"
+            android:layout_alignParentBottom="true"
             android:layout_margin="30dp"
-            android:text="Add"
-            android:id="@+id/add" />
+            android:text="@string/sync_calendar"
+            android:id="@+id/sync" />
 
     </RelativeLayout>
 

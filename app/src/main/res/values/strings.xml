@@ -32,5 +32,9 @@
     <string name="description">Description</string>
     <string name="twitter_handle">Twitter Handle</string>
     <string name="twitter_info">Feel free to add a custom twitter feed of your choice. Don\'t forget to enable the feed in emotion configurations later</string>
+    <string name="sm_info">Hello! Welcome to the SmartMirror mobile application. Your one stop shop for customizing your SmartMirror device.</string>
+    <string name="cal_info">You can sync your Google Calendar events with SmartMirror and get alerts!</string>
+    <string name="sync_calendar">Sync Calendar</string>
+    <string name="smartmirror">SmartMirror</string>
 
 </resources>
