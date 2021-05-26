@@ -1,6 +1,7 @@
 package com.guyson.smartmirror.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -247,6 +249,18 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
                 });
             }
         }
+
+        // If custom article allow delete
+        if (filteredArticles.get(position).getType().equals("Custom")) {
+            //Handle on hold
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    removeCustomTwitter(filteredArticles.get(position));
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -285,6 +299,32 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
                 notifyDataSetChanged();
             }
         };
+    }
+
+    private void removeCustomTwitter(final TwitterArticle article) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("Remove Custom Twitter Feed");
+        builder.setMessage("Are you sure that you want remove "+article.getTitle()+" ?");
+
+        //When "Remove" button is clicked
+        builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Remove entry from database
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("custom_tweets").child(user.getUid()).child("-"+article.getUid());
+                ref.removeValue();
+            }
+        });
+
+        //When cancel button is clicked
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
