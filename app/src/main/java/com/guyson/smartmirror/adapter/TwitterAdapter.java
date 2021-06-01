@@ -2,6 +2,7 @@ package com.guyson.smartmirror.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -256,7 +257,7 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    removeCustomTwitter(filteredArticles.get(position));
+                    removeCustomTwitter(filteredArticles.get(position), user);
                     return false;
                 }
             });
@@ -301,7 +302,7 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
         };
     }
 
-    private void removeCustomTwitter(final TwitterArticle article) {
+    private void removeCustomTwitter(final TwitterArticle article, final User user) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Remove Custom Twitter Feed");
         builder.setMessage("Are you sure that you want remove "+article.getTitle()+" ?");
@@ -310,6 +311,13 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
         builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                //If subscribed remove from subscriptions
+                DatabaseReference ref_user = FirebaseDatabase.getInstance().getReference().child("user").child(user.getUid());
+                user.getSad().remove(article.getUid());
+                user.getHappy().remove(article.getUid());
+                user.getNeutral().remove(article.getUid());
+                ref_user.setValue(user);
+
                 // Remove entry from database
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("custom_tweets").child(user.getUid()).child("-"+article.getUid());
                 ref.removeValue();

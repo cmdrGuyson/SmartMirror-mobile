@@ -29,12 +29,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.guyson.smartmirror.FacialRecognitionActivity;
 import com.guyson.smartmirror.R;
-import com.guyson.smartmirror.TwitterActivity;
 import com.guyson.smartmirror.model.TwitterArticle;
 import com.guyson.smartmirror.service.RetrofitClientInstance;
-import com.guyson.smartmirror.service.RetrofitClientInstanceTwitter;
+import com.guyson.smartmirror.service.RetrofitTwitterClientInstance;
 import com.guyson.smartmirror.service.TwitterClient;
 
 import org.json.JSONObject;
@@ -58,7 +56,7 @@ public class AddTwitterFragment extends DialogFragment {
     
     private boolean customArticlesLoaded, systemArticlesLoaded, hasErrors;
 
-    private final TwitterClient twitterClient = RetrofitClientInstanceTwitter.getRetrofitInstance().create(TwitterClient.class);
+    private final TwitterClient twitterClient = RetrofitTwitterClientInstance.getRetrofitInstance().create(TwitterClient.class);
 
     //Database reference to get custom articles
     DatabaseReference custom_ref;

@@ -3,14 +3,6 @@ package com.guyson.smartmirror.model;
 public class NewsArticle {
     private String uid, title, description, imageUrl, apiUrl;
 
-    public NewsArticle(String uid, String title, String description, String imageUrl, String apiUrl) {
-        this.uid = uid;
-        this.title = title;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.apiUrl = apiUrl;
-    }
-
     public NewsArticle() {
     }
 
