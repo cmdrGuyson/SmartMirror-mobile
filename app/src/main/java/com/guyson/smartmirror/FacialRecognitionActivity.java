@@ -3,6 +3,7 @@ package com.guyson.smartmirror;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -13,23 +14,31 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.guyson.smartmirror.model.AuthenticationRequest;
+import com.guyson.smartmirror.model.AuthenticationResponse;
 import com.guyson.smartmirror.service.RetrofitClientInstance;
 import com.guyson.smartmirror.service.UserClient;
 import com.guyson.smartmirror.util.ExtraUtilities;
@@ -233,52 +242,129 @@ public class FacialRecognitionActivity extends AppCompatActivity implements Navi
                 builder.addFormDataPart("files[]", f.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), f));
             }
 
-            //Build request body and make request
-            MultipartBody requestBody = builder.build();
-            Call<ResponseBody> call = userClient.setupFaceRecognition(requestBody.parts(), uid);
-
             //Show progress bar
             mProgressBar.setVisibility(View.VISIBLE);
 
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    //Successfully added
-                    if (response.code()==200) {
-                        // Get reference to user object
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("user").child(uid).child("configuredFaceRecognition");
+            //Build request body and make request
+            MultipartBody requestBody = builder.build();
 
-                        //Set "Configured Face Recognition" to true
-                        reference.setValue(true);
-
-                        Toast.makeText(FacialRecognitionActivity.this, "Successfully setup face recognition!", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-
-                        try {
-
-                            // Capture an display specific messages
-                            JSONObject obj = new JSONObject(response.errorBody().string());
-                            Toast.makeText(FacialRecognitionActivity.this, obj.getString("error"), Toast.LENGTH_SHORT).show();
-
-                        }catch(Exception e) {
-                            Toast.makeText(FacialRecognitionActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    //Hide progress bar
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    t.printStackTrace();
-                    Toast.makeText(FacialRecognitionActivity.this, "Something went wrong when contacting server!", Toast.LENGTH_SHORT).show();
-                    //Hide progress bar
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                }
-            });
+            //Handle submit
+            handleAuthAndSubmit(requestBody);
 
         }
+    }
+
+    private void handleAuthAndSubmit(final MultipartBody requestBody) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Please enter your password");
+
+        // Set up input field
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String password = input.getText().toString();
+
+                // Validate input
+                if(TextUtils.isEmpty(password)) {
+                    Toast.makeText(FacialRecognitionActivity.this, "Please enter password", Toast.LENGTH_SHORT).show();
+                } else {
+                    //Get email
+                    SharedPreferences sharedPrefs = FacialRecognitionActivity.this.getSharedPreferences("auth_preferences",Context.MODE_PRIVATE);
+                    String email = sharedPrefs.getString("email", null);
+
+                    AuthenticationRequest request = new AuthenticationRequest(email, password);
+
+                    //Authentication call
+                    Call<AuthenticationResponse> auth_call = userClient.authenticateUser(request);
+
+                    //Enqueue call
+                    auth_call.enqueue(new Callback<AuthenticationResponse>() {
+                        @Override
+                        public void onResponse(Call<AuthenticationResponse> call, Response<AuthenticationResponse> response) {
+                            // If response is successful
+                            if (response.isSuccessful()) {
+
+                                //Handle Face recognition setup request
+                                handleUploadRequest(requestBody, "Bearer "+ response.body().getToken());
+                            }
+                            //Invalid username or password
+                            else if (response.code() == 403) {
+                                Toast.makeText(FacialRecognitionActivity.this, "Invalid password", Toast.LENGTH_SHORT).show();
+                                mProgressBar.setVisibility(View.INVISIBLE);
+                            } else {
+                                Toast.makeText(FacialRecognitionActivity.this, "There was an error while authenticating", Toast.LENGTH_SHORT).show();
+                                mProgressBar.setVisibility(View.INVISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<AuthenticationResponse> call, Throwable t) {
+                            Toast.makeText(FacialRecognitionActivity.this, "Something went wrong while authenticating", Toast.LENGTH_SHORT).show();
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
+                }
+
+
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        builder.show();
+    }
+
+    private void handleUploadRequest(MultipartBody requestBody, String token) {
+        Call<ResponseBody> call = userClient.setupFaceRecognition(token ,requestBody.parts());
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                //Successfully added
+                if (response.code()==200) {
+                    // Get reference to user object
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("user").child(uid).child("configuredFaceRecognition");
+
+                    //Set "Configured Face Recognition" to true
+                    reference.setValue(true);
+
+                    Toast.makeText(FacialRecognitionActivity.this, "Successfully setup face recognition!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+
+                    try {
+
+                        // Capture an display specific messages
+                        JSONObject obj = new JSONObject(response.errorBody().string());
+                        Toast.makeText(FacialRecognitionActivity.this, obj.getString("error"), Toast.LENGTH_SHORT).show();
+
+                    }catch(Exception e) {
+                        Toast.makeText(FacialRecognitionActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                //Hide progress bar
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(FacialRecognitionActivity.this, "Something went wrong when contacting server!", Toast.LENGTH_SHORT).show();
+                //Hide progress bar
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     //Store compressed files on storage and give compressed file list for upload

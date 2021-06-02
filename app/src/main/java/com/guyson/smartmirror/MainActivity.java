@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private MaterialButton mLoginButton;
     private ProgressBar mProgressBar;
     private TextView mRegisterTextView;
+
+    private SharedPreferences sharedPrefs;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -56,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressbar);
         mRegisterTextView = findViewById(R.id.tv_register);
 
+        //Get shared prefs
+        sharedPrefs = MainActivity.this.getSharedPreferences("auth_preferences",Context.MODE_PRIVATE);
+
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mLoginButton.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
 
-        String email = mEmailEditText.getText().toString().trim();
+        final String email = mEmailEditText.getText().toString().trim();
         String password = mPasswordEditText.getText().toString();
 
         //If there are empty fields
@@ -97,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         mProgressBar.setVisibility(View.INVISIBLE);
+
+                        //Save email in shared preferences
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putString("email", email);
+                        editor.apply();
 
                         Toast.makeText(MainActivity.this, "Successfully signed in!", Toast.LENGTH_SHORT).show();
 

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -31,6 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
     private MaterialButton mRegisterButton;
     private ProgressBar mProgressBar;
     private TextView mLoginTextView;
+
+    private SharedPreferences sharedPrefs;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -63,6 +66,9 @@ public class RegisterActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressbar);
         mLoginTextView = findViewById(R.id.tv_login);
 
+        //Get shared prefs
+        sharedPrefs = RegisterActivity.this.getSharedPreferences("auth_preferences",Context.MODE_PRIVATE);
+
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String firstName = mFirstNameEditText.getText().toString().trim();
         final String lastName = mLastNameEditText.getText().toString().trim();
         final String email = mEmailEditText.getText().toString().trim();
-        String password = mPasswordEditText.getText().toString();
+        final String password = mPasswordEditText.getText().toString();
         final String confirmPassword = mConfirmPasswordEditText.getText().toString();
 
         //If fields are empty
@@ -118,6 +124,11 @@ public class RegisterActivity extends AppCompatActivity {
                         DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("user").child(uid);
                         User user = new User(uid, email, firstName, lastName);
                         currentUserReference.setValue(user);
+
+                        //Save email in shared preferences
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putString("email", email);
+                        editor.apply();
 
                         Toast.makeText(RegisterActivity.this, "Successfully Registered!", Toast.LENGTH_SHORT).show();
 
