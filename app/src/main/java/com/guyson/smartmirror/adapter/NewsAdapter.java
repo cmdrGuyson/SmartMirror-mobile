@@ -140,9 +140,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
                     if (finalIsSubscribed) {
                         list.remove(filteredNews.get(position).getUid());
                         compoundButton.setChecked(false);
+                        Toast.makeText(context, "Unsubscribed successfully!", Toast.LENGTH_SHORT).show();
                     } else {
                         list.add(filteredNews.get(position).getUid());
                         compoundButton.setChecked(true);
+                        Toast.makeText(context, "Subscribed successfully!", Toast.LENGTH_SHORT).show();
                     }
 
 

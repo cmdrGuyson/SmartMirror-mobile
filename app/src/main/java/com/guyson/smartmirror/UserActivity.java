@@ -106,11 +106,11 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     private void add() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tweets");
         TwitterArticle article = new TwitterArticle();
-        article.setTitle("@Pulse_LK");
-        article.setDescription("Mus mauris vitae ultricies leo integer malesuada nunc. Tempor nec feugiat nisl pretium fusce id. Eu non diam phasellus vestibulum lorem. In ante metus dictum at tempor. In egestas erat imperdiet sed euismod nisi.");
-        article.setImageUrl("https://firebasestorage.googleapis.com/v0/b/smartmirror-c227b.appspot.com/o/pulse.jpg?alt=media&token=989a1873-8671-41e0-b2b5-6ef35a22c17f");
-        article.setKeyword("pulse_lk");
-        article.setType("Lifestyle");
+        article.setTitle("@NASA");
+        article.setDescription("Neque gravida in fermentum et sollicitudin ac orci. Erat imperdiet sed euismod nisi porta lorem mollis aliquam. Malesuada bibendum arcu vitae elementum curabitur vitae. Amet justo donec enim diam.");
+        article.setImageUrl("https://firebasestorage.googleapis.com/v0/b/smartmirror-c227b.appspot.com/o/nasa.png?alt=media&token=c8af2bf5-31ef-46e3-a933-3721b706f6c7");
+        article.setKeyword("NASA");
+        article.setType("Science");
         ref.push().setValue(article);
         Toast.makeText(UserActivity.this, "Added!", Toast.LENGTH_SHORT).show();
     }

@@ -150,9 +150,11 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
                         if (finalIsSubscribed) {
                             list.remove(filteredArticles.get(position).getUid());
                             compoundButton.setChecked(false);
+                            Toast.makeText(context, "Unsubscribed successfully!", Toast.LENGTH_SHORT).show();
                         } else {
                             list.add(filteredArticles.get(position).getUid());
                             compoundButton.setChecked(true);
+                            Toast.makeText(context, "Subscribed successfully!", Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -321,6 +323,7 @@ public class TwitterAdapter extends RecyclerView.Adapter<TwitterAdapter.ViewHold
                 // Remove entry from database
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("custom_tweets").child(user.getUid()).child("-"+article.getUid());
                 ref.removeValue();
+                Toast.makeText(context, "Deleted successfully!", Toast.LENGTH_SHORT).show();
             }
         });
 
