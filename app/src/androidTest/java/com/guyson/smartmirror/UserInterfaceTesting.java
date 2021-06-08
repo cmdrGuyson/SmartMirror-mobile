@@ -152,6 +152,120 @@ public class UserInterfaceTesting {
         onView(withText("Passwords don't match!")).inRoot(withDecorView(not(mainActivityActivityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testViewLocationInformation() {
+        login();
+
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.location_nav));
+
+        // Directed activity
+        String activityName = LocationActivity.class.getName();
+
+        WaitActivityIsResumedIdlingResource resource = new WaitActivityIsResumedIdlingResource(activityName);
+
+        Espresso.registerIdlingResources(resource);
+        intended(hasComponent(hasClassName(activityName)));
+        Espresso.unregisterIdlingResources(resource);
+
+        logout();
+    }
+
+    @Test
+    public void testViewNewsInterests() {
+        login();
+
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.news_nav));
+
+        // Directed activity
+        String activityName = NewsActivity.class.getName();
+
+        WaitActivityIsResumedIdlingResource resource = new WaitActivityIsResumedIdlingResource(activityName);
+
+        Espresso.registerIdlingResources(resource);
+        intended(hasComponent(hasClassName(activityName)));
+        Espresso.unregisterIdlingResources(resource);
+
+        logout();
+    }
+
+    @Test
+    public void testViewHappyFeed() {
+        login();
+
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.happy_nav));
+
+        // Directed activity
+        String activityName = TwitterActivity.class.getName();
+
+        WaitActivityIsResumedIdlingResource resource = new WaitActivityIsResumedIdlingResource(activityName);
+
+        Espresso.registerIdlingResources(resource);
+        intended(hasComponent(hasClassName(activityName)));
+        Espresso.unregisterIdlingResources(resource);
+
+        logout();
+    }
+
+    @Test
+    public void testViewSadFeed() {
+        login();
+
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.sad_nav));
+
+        // Directed activity
+        String activityName = TwitterActivity.class.getName();
+
+        WaitActivityIsResumedIdlingResource resource = new WaitActivityIsResumedIdlingResource(activityName);
+
+        Espresso.registerIdlingResources(resource);
+        intended(hasComponent(hasClassName(activityName)));
+        Espresso.unregisterIdlingResources(resource);
+
+        logout();
+    }
+
+    @Test
+    public void testViewNeutralFeed() {
+        login();
+
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.neutral_nav));
+
+        // Directed activity
+        String activityName = TwitterActivity.class.getName();
+
+        WaitActivityIsResumedIdlingResource resource = new WaitActivityIsResumedIdlingResource(activityName);
+
+        Espresso.registerIdlingResources(resource);
+        intended(hasComponent(hasClassName(activityName)));
+        Espresso.unregisterIdlingResources(resource);
+
+        logout();
+    }
+
+    @Test
+    public void testDirectToFaceRecognitionSetup() {
+        login();
+
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.LEFT))).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.setup_fr));
+
+        // Directed activity
+        String activityName = FacialRecognitionActivity.class.getName();
+
+        WaitActivityIsResumedIdlingResource resource = new WaitActivityIsResumedIdlingResource(activityName);
+
+        Espresso.registerIdlingResources(resource);
+        intended(hasComponent(hasClassName(activityName)));
+        Espresso.unregisterIdlingResources(resource);
+
+        logout();
+    }
+
     private void login() {
         // Enter username and password.
         onView(withId(R.id.input_email)).perform(typeText(EMAIL), closeSoftKeyboard());
@@ -166,7 +280,7 @@ public class UserInterfaceTesting {
         WaitActivityIsResumedIdlingResource resource = new WaitActivityIsResumedIdlingResource(activityName);
 
         Espresso.registerIdlingResources(resource);
-        intended(hasComponent(hasClassName(activityName)), times(3));
+        intended(hasComponent(hasClassName(activityName)));
         Espresso.unregisterIdlingResources(resource);
     }
 
