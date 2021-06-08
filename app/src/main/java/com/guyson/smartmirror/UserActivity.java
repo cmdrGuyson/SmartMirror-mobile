@@ -56,17 +56,17 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
         // Setup Authorization
         firebaseAuth = FirebaseAuth.getInstance();
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                //If user is not logged in direct user to "Login"
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Intent intent = new Intent(UserActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-            }
-        };
+//        authStateListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                //If user is not logged in direct user to "Login"
+//                if (firebaseAuth.getCurrentUser() == null) {
+//                    Intent intent = new Intent(UserActivity.this, MainActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+//                }
+//            }
+//        };
 
         uid = firebaseAuth.getCurrentUser().getUid();
 
@@ -207,6 +207,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
         // Check for authorization
-        firebaseAuth.addAuthStateListener(authStateListener);
+        if (!getResources().getString(R.string.env).equals("TEST")) firebaseAuth.addAuthStateListener(authStateListener);
     }
 }

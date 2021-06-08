@@ -152,6 +152,6 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // Check for authorization
-        firebaseAuth.addAuthStateListener(authStateListener);
+        if (!getResources().getString(R.string.env).equals("TEST")) firebaseAuth.addAuthStateListener(authStateListener);
     }
 }
