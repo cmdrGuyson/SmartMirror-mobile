@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }else{
                         mProgressBar.setVisibility(View.INVISIBLE);
-                        Toast.makeText(MainActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

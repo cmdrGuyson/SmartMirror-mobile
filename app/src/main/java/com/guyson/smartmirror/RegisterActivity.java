@@ -141,7 +141,7 @@ public class RegisterActivity extends AppCompatActivity {
                         startActivity(homePageIntent);
                     }else{
                         mProgressBar.setVisibility(View.INVISIBLE);
-                        Toast.makeText(RegisterActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                        if(task.getException()!=null) Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             });
